@@ -13,7 +13,26 @@ public class Test
 {
     public static void main(String[] args) 
     {
-        System.out.println("Hello");
+       SQLiteDatabase myTest = new SQLiteDatabase();
+        
+        myTest.setFilePath("jdbc:sqlite:D:/sqlite/DB/Test.db");
+        
+        myTest.createDatabase();
+        
+        myTest.connectDatabase();
+        
+        String SQLTable = "CREATE TABLE IF NOT EXISTS Scores (\n"
+                + "    id integer PRIMARY KEY,\n"
+                + "    name text NOT NULL,\n"
+                + "    Score interger NOT NULL \n"
+                + ");";
+        
+        myTest.createTable(SQLTable);
+        
+        String SQLDropTable = "DROP TABLE Scores;";
+        
+        myTest.DropTable(SQLDropTable);
+       
     }
    
 }
