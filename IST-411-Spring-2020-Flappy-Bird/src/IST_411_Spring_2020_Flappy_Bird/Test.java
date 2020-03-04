@@ -7,7 +7,7 @@ package IST_411_Spring_2020_Flappy_Bird;
 
 /**
  *
- * @author Jake_Gaming_PC
+ * @author Jacob Mullan
  */
 public class Test 
 {
