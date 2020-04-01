@@ -17,29 +17,51 @@ public class SQLiteDatabase
 {
     
     private String filePath = "";
+    private Connection  myCon = null;
 
+    
+    
+    public Connection getMyCon() 
+    {
+        return myCon;
+    }// getMyCon
+
+    
+    
+    public void setMyCon(Connection newMyCon)
+    {
+        myCon = newMyCon;
+    }// setMyCon
+    
+    
+    
     public String getFilePath() {
         return filePath;
-    }
+    }// getFilePath
 
+    
+    
     public void setFilePath(String newFilePath) {
         filePath = newFilePath;
-    }
+    }// setfilePath
+    
+    
     
     public void createDatabase()
     {
         
         
-        try(Connection myCon = DriverManager.getConnection(filePath))
+        try(Connection createCon = DriverManager.getConnection(filePath))
         {
             
-            if (myCon != null) 
+            if (createCon != null) 
             {
-                DatabaseMetaData meta = myCon.getMetaData();
+                DatabaseMetaData meta = createCon.getMetaData();
                 System.out.println("The driver name is " + meta.getDriverName());
                 System.out.println("A database has been created in " + filePath);
                 
             }// Creates database if connection is not Null
+            
         }
         
         catch(SQLException e)
@@ -51,50 +73,40 @@ public class SQLiteDatabase
     }// createDatabase
     
     
-    public void connectDatabase( )
+    
+    public void connectDatabase(Connection myCon )
     {
      //All code followed  from  https://www.sqlitetutorial.net/sqlite-java/sqlite-jdbc-driver/
     
-       Connection  myCon = null;
+       
         try
         {
-            
-            myCon = DriverManager.getConnection(filePath);// connects to the database using the filepath
-          
-            System.out.println("Connection has been established.");
-        }
+           myCon = DriverManager.getConnection(filePath);// connects to the database using the filepath
+           setMyCon(myCon);
+           
+           System.out.println("Connection has been established."); 
+           
+        }// try
         
-        catch(SQLException e)
+        catch(SQLException myException)
         {
-             System.out.println(e.getMessage());
-        }
-        
-        try {
-                if (myCon != null) 
-                {
-                    myCon.close();// closes the connection
-                    System.out.println("Connection has been closed.");
-                }// if (myCon != null)
-            } // try
-            
-        catch (SQLException e) 
-            {
-                System.out.println(e.getMessage());
-            }    
-        
-    
+             System.out.println(myException.getMessage());
+        }//
+          
     }// connectDatabase
+    
+    
     
     // gotten from https://www.sqlitetutorial.net/sqlite-java/create-table/
     
-    public void createTable(String tableSQL)
+    public void createTable(String tableQuery)
     {
-        String newTableSQL = tableSQL;
+        String newTableQuery = tableQuery;
         
-        try(Connection myCon = DriverManager.getConnection(filePath))
+        try //(Connection myCon = DriverManager.getConnection(filePath))
         {
             Statement createTable = myCon.createStatement();
-            createTable.execute(newTableSQL);
+            createTable.execute(newTableQuery);
             System.out.println("A Table has been created");
         }//try to creat Table
         catch(SQLException e)
@@ -103,14 +115,16 @@ public class SQLiteDatabase
         }// catch SQLException
     }// createTable
     
-    public void DropTable(String tableSQL)
+    
+    
+    public void DropTable(String tableQuery)
     {
-        String newTableSQL = tableSQL;
+        String newTableQuery = tableQuery;
         
-        try(Connection myCon = DriverManager.getConnection(filePath))
+        try //( myCon )
         {
             Statement createTable = myCon.createStatement();
-            createTable.execute(newTableSQL);
+            createTable.execute(newTableQuery);
             System.out.println("The table has been Dropped");
         }//try to Drop the Table
         
@@ -120,9 +134,40 @@ public class SQLiteDatabase
         }// catch SQLException
     }// DropTable
     
-    public void disconnect()
+    
+    
+    public ResultSet TableQuery (String Query)
     {
-        Connection myCon = null;
+        ResultSet rsReturn = null;
+        try
+        {
+            
+        Connection cTemp = getMyCon();
+        if(cTemp!= null)
+        {
+            Statement QueryStmt = cTemp.createStatement();
+            rsReturn = QueryStmt.executeQuery(Query);
+            
+        }// if
+        
+        }// try
+        
+        catch(SQLException ex)
+        {
+            System.out.println(ex.getMessage());
+            
+        }// catch
+        
+        return rsReturn;
+    }// TableQuery
+            
+            
+            
+            
+    public void disconnect(Connection myCon)
+    {
+        
+        
          try {
                 if (myCon != null) 
                 {
@@ -134,6 +179,7 @@ public class SQLiteDatabase
             catch (SQLException ex) 
             {
                 System.out.println(ex.getMessage());
-            }
-    }
-}
+            }//catch
+    }//disconnect
+    
+}//SQLiteDatabase

@@ -19,11 +19,11 @@ public class Test
         
         myTest.createDatabase();
         
-        myTest.connectDatabase();
+        myTest.connectDatabase(myTest.getMyCon());
         
         String SQLTable = "CREATE TABLE IF NOT EXISTS Scores (\n"
-                + "    id integer PRIMARY KEY,\n"
-                + "    name text NOT NULL,\n"
+                + "    ID integer PRIMARY KEY,\n"
+                + "    Name text NOT NULL,\n"
                 + "    Score interger NOT NULL \n"
                 + ");";
         
@@ -31,7 +31,9 @@ public class Test
         
         String SQLDropTable = "DROP TABLE Scores;";
         
-        myTest.DropTable(SQLDropTable);
+        myTest.DropTable(SQLTable);
+        
+        myTest.disconnect(myTest.getMyCon());
        
     }
    
