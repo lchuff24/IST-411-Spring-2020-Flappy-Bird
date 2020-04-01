@@ -16,10 +16,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 
@@ -44,6 +47,7 @@ public class VisPanel extends JPanel {
     private Image start, startPush, scores, scoresPush;
     private JToggleButton startButton;
     private JToggleButton scoreButton;
+    private JLabel countdownLabel;
     
     public VisPanel(FlyingToucanIST411 gameIn, Toucan playerIn, ArrayList<Rectangle> obs) throws FontFormatException, IOException {
         this.game = gameIn;
@@ -56,7 +60,7 @@ public class VisPanel extends JPanel {
         gameFont = Font.createFont(Font.TRUETYPE_FONT, new File("pixel_font.ttf")).deriveFont(30f);
         titleFont = Font.createFont(Font.TRUETYPE_FONT, new File("pixel_font.ttf")).deriveFont(100f);
         
-//        gameFont = new Font("Arial", Font.BOLD, 18); //change from comic sans gross lol
+//        gameFont = new Font("Arial", Font.BOLD, 18);
 //        menuFont = new Font("Arial", Font.BOLD, 48);
         
         try {
@@ -103,6 +107,14 @@ public class VisPanel extends JPanel {
             this.add(startButton);
             scoreButton.setSelected(false);
             this.add(scoreButton);
+            
+//label test for countdown
+countdownLabel = new JLabel("test");
+countdownLabel.setLocation(0, 20);
+countdownLabel.setSize(100, 100);
+countdownLabel.setVisible(true);
+this.add(countdownLabel);
+            
             
             //title and key guide
             g.setColor(Color.white);
@@ -187,8 +199,42 @@ public class VisPanel extends JPanel {
     }
     
     private void gameStarted() {
-        game.setStop(false);
         this.remove(startButton);
         this.remove(scoreButton);
+        
+        game.setStop(false);
+        //countdown
+//startCountDown();
+        
+    }
+    
+    public void startCountDown() {
+        countdownLabel = new JLabel("3");
+//        countdownLabel.setBounds(0, 200, 100, 100);
+//        countdownLabel.setFont(titleFont)
+        this.add(countdownLabel);;
+        countdownLabel.setVisible(true);
+        //
+        int timer = 4;
+        countdownLabel.setText(String.valueOf(timer));
+//        while(timer>0){
+//            try {
+//                TimeUnit.SECONDS.sleep(1);
+//                timer--;
+//                if(timer == 0){
+//                    countdownLabel.setText("GO!");
+//                } else{
+//                    countdownLabel.setText(String.valueOf(timer));
+//                }
+//                System.out.println(timer + ", " + String.valueOf(timer));
+//                
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(VisPanel.class.getName()).log(Level.SEVERE, null, ex);
+//                break;
+//            }
+//        }
+        
+        this.remove(countdownLabel);
+        game.setStop(false);
     }
 }

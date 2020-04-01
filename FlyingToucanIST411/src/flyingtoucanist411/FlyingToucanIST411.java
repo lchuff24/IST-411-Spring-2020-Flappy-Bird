@@ -55,6 +55,7 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
         mainFrame = new JFrame("Flying Toucan");
         gamePanel = new VisPanel(this, player, obstacles);
         mainFrame.add(gamePanel);
+        mainFrame.setResizable(false);
         
         mainFrame.setSize(WIDTH, HEIGHT);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -82,7 +83,7 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
                                                        *30 //makes the rand height a multiple of N
                                                        -200; //final height(y) adjustments
 
-                System.out.println(randHeight);
+//                System.out.println(randHeight);
                 //top rectangle
                 Rectangle r = new Rectangle(WIDTH, randHeight, VisPanel.ABOVE_W, VisPanel.ABOVE_H);
                 //below rectangle
