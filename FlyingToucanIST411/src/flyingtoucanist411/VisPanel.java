@@ -8,12 +8,15 @@ import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -25,6 +28,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
+import javax.swing.Timer;
 
 /**
  *
@@ -48,20 +52,17 @@ public class VisPanel extends JPanel {
     private JToggleButton startButton;
     private JToggleButton scoreButton;
     private JLabel countdownLabel;
-    
+    private Timer timer;
+    private long startTime = -1;
+    private long duration = 5000;
+
     public VisPanel(FlyingToucanIST411 gameIn, Toucan playerIn, ArrayList<Rectangle> obs) throws FontFormatException, IOException {
         this.game = gameIn;
         this.player = playerIn;
         this.obstacles = obs;
         
-//GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("pixel_font.ttf")));
-        
         gameFont = Font.createFont(Font.TRUETYPE_FONT, new File("pixel_font.ttf")).deriveFont(30f);
         titleFont = Font.createFont(Font.TRUETYPE_FONT, new File("pixel_font.ttf")).deriveFont(100f);
-        
-//        gameFont = new Font("Arial", Font.BOLD, 18);
-//        menuFont = new Font("Arial", Font.BOLD, 48);
         
         try {
             setImages();
@@ -94,28 +95,30 @@ public class VisPanel extends JPanel {
             flatG.drawImage(obBelow, ob.x-30, ob.y-30 + GAP, ABOVE_W, ABOVE_H, null);          
         }
         
+        //player will be on top of obstacles
+        player.updateAsset(g);
+        
+        //update score
         if(!game.isGameStopped()) {
-            player.updateAsset(g);
             g.setFont(gameFont);
             g.setColor(Color.white);
             g.drawString("Score: "+game.getScore(), 10, 30);
         }
         
+        //allows the player to hover after start clicked, to prevent falling to death
+        if(!game.isFlying()) { 
+            player.resetToucan();
+        }
+        
+        //when in menu
         if(game.isGameStopped()) {
             player.hideToucan();
-            //startButton.setSelected(false);
+
+            startButton.setSelected(false);
             this.add(startButton);
             scoreButton.setSelected(false);
             this.add(scoreButton);
-            
-//label test for countdown
-countdownLabel = new JLabel("test");
-countdownLabel.setLocation(0, 20);
-countdownLabel.setSize(100, 100);
-countdownLabel.setVisible(true);
-this.add(countdownLabel);
-            
-            
+                        
             //title and key guide
             g.setColor(Color.white);
             g.setFont(titleFont);
@@ -124,6 +127,9 @@ this.add(countdownLabel);
             g.setFont(gameFont);
             g.drawString("Press [ space ] to fly up!", 185, 330);
         }
+        
+        //TODO do a version of menu that shows score and doesnt show title
+            //also asks user to enter name if desired, and a submit button
     }
 
     
@@ -142,13 +148,9 @@ this.add(countdownLabel);
         startButton.setFocusable(false);
         startButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startButtonActionPerformed(evt);
+                gameStarted();
             }
         });
-    }
-        
-    private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        gameStarted();
     }
     
     private void loadScoreButton() {
@@ -162,13 +164,9 @@ this.add(countdownLabel);
         scoreButton.setFocusable(false);
         scoreButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                scoreButtonActionPerformed(evt);
+                //TODO remove home page and show scores from sql
             }
         });
-    }
-    
-    private void scoreButtonActionPerformed(java.awt.event.ActionEvent evt) {
-        //TODO remove home page and show scores from sql
     }
     
     private void setImages() throws IOException {
@@ -190,7 +188,6 @@ this.add(countdownLabel);
     
     public void startButtonPressed() {
         startButton.setSelected(true);
-        //TimeUnit.SECONDS.sleep(1);
         gameStarted();
     }
     
@@ -203,38 +200,6 @@ this.add(countdownLabel);
         this.remove(scoreButton);
         
         game.setStop(false);
-        //countdown
-//startCountDown();
-        
     }
     
-    public void startCountDown() {
-        countdownLabel = new JLabel("3");
-//        countdownLabel.setBounds(0, 200, 100, 100);
-//        countdownLabel.setFont(titleFont)
-        this.add(countdownLabel);;
-        countdownLabel.setVisible(true);
-        //
-        int timer = 4;
-        countdownLabel.setText(String.valueOf(timer));
-//        while(timer>0){
-//            try {
-//                TimeUnit.SECONDS.sleep(1);
-//                timer--;
-//                if(timer == 0){
-//                    countdownLabel.setText("GO!");
-//                } else{
-//                    countdownLabel.setText(String.valueOf(timer));
-//                }
-//                System.out.println(timer + ", " + String.valueOf(timer));
-//                
-//            } catch (InterruptedException ex) {
-//                Logger.getLogger(VisPanel.class.getName()).log(Level.SEVERE, null, ex);
-//                break;
-//            }
-//        }
-        
-        this.remove(countdownLabel);
-        game.setStop(false);
-    }
 }

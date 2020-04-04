@@ -31,12 +31,13 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
                             TB_BUFFER = 10;
     
     private JFrame mainFrame;
+    private JPanel countDownPanel;
     private VisPanel gamePanel;
     private Toucan player;
     private ArrayList<Rectangle> obstacles;  //TODO replace with obstacle images
     private int gameTime, gameScroll;
     private Timer timer;
-    private boolean stop;
+    private boolean stop, flying;
     
     private int score;
     
@@ -56,14 +57,14 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
         gamePanel = new VisPanel(this, player, obstacles);
         mainFrame.add(gamePanel);
         mainFrame.setResizable(false);
-        
+
         mainFrame.setSize(WIDTH, HEIGHT);
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setVisible(true);
         mainFrame.addKeyListener(this);
-        //addMouseListener();
         
         stop = true;
+        flying = false;
         
         timer = new Timer(1000/FPS, this);
         timer.start();
@@ -75,76 +76,79 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
         gamePanel.repaint();
         //if not stopped
         if(!stop) {
-            player.flightPhysics();
-            //number below in if statement determines how oftten obstacles are spawned
-            if(gameScroll % 100 == 0) {
-                int randHeight = ((int)(Math.random() * 7) //makes numbers between 0 and N(number of different heights)
-                                                        +1) //between 1-N no only not including 1 and N
-                                                       *30 //makes the rand height a multiple of N
-                                                       -200; //final height(y) adjustments
+            if(flying) {
+                player.flightPhysics();
+                //number below in if statement determines how oftten obstacles are spawned
+                if(gameScroll % 100 == 0) {
+                    int randHeight = ((int)(Math.random() * 7) //makes numbers between 0 and N(number of different heights)
+                                                            +1) //between 1-N no only not including 1 and N
+                                                           *30 //makes the rand height a multiple of N
+                                                           -200; //final height(y) adjustments
 
-//                System.out.println(randHeight);
-                //top rectangle
-                Rectangle r = new Rectangle(WIDTH, randHeight, VisPanel.ABOVE_W, VisPanel.ABOVE_H);
-                //below rectangle
-//                Rectangle r2 = new Rectangle(WIDTH, randHeight + VisPanel.GAP, VisPanel.BELOW_W, VisPanel.BELOW_H);
-                obstacles.add(r);
-//                obstacles.add(r2);
-            }
-            ArrayList<Rectangle> remove = new ArrayList<Rectangle>();
-            boolean running = true;
-            //handle active obstacles and collision
-            for(Rectangle r : obstacles) {
-                r.x-=3; //obstacle speed
-                if(r.x + r.width <= 0) {
-                    remove.add(r);
+    //                System.out.println(randHeight);
+                    //top rectangle
+                    Rectangle r = new Rectangle(WIDTH, randHeight, VisPanel.ABOVE_W, VisPanel.ABOVE_H);
+                    //below rectangle
+    //                Rectangle r2 = new Rectangle(WIDTH, randHeight + VisPanel.GAP, VisPanel.BELOW_W, VisPanel.BELOW_H);
+                    obstacles.add(r);
+    //                obstacles.add(r2);
                 }
-                
-                //location for image collission
-                //top ob check
-                if( player.xValue < r.x + r.width - LR_BUFFER   //checks collision on right side, number indicates buffer
-                 && player.xValue + player.IMG_WIDTH > r.x + LR_BUFFER //checks collision on left side, number indicates buffer
-                 && player.yValue < r.y + r.height - TB_BUFFER  //checks collision on bottom side, number indicates buffer
-//                 && player.yValue + player.IMG_HEIGHT > r.y + TB_BUFFER //checks collision on top side, number indicates buffer, not needed for top obstacle
-                    ) 
-                {
-                    running = false;
-                    gameOver();
-                }
-                //bottom ob check 
-                else if (player.xValue < r.x + r.width - LR_BUFFER  //checks collision on right side, number indicates buffer
-                 && player.xValue + player.IMG_WIDTH > r.x + LR_BUFFER //checks collision on left side, number indicates buffer
-//                 && player.yValue < r.y + r.height + VisPanel.GAP - LR_BUFFER  //checks collision on bottom side, number indicates buffer, not needed for top obstacle
-                 && player.yValue + player.IMG_HEIGHT > r.y + VisPanel.GAP + LR_BUFFER  //checks collision on top side, number indicates buffer
-                    )
-                {
-                    running = false;
-                    gameOver();
-                }
-                
-                if(player.xValue>r.x+r.width && player.xValue<r.x +r.width+4) {
-                    score++;
-                }
-                
-            }
-            obstacles.removeAll(remove);
-            gameTime++;
-            gameScroll++;
-            
-            //if player goes out of map
-            if(player.yValue + player.IMG_HEIGHT > HEIGHT || player.yValue < 0) {
-                gameOver();
-                running = false;
-            }
+                ArrayList<Rectangle> remove = new ArrayList<Rectangle>();
+                boolean running = true;
+                //handle active obstacles and collision
+                for(Rectangle r : obstacles) {
+                    r.x-=3; //obstacle speed
+                    if(r.x + r.width <= 0) {
+                        remove.add(r);
+                    }
 
-            if(!running) {
-                obstacles.clear();
-                //player.resetToucan();  //commented out to work with hiding player
-                gameTime = 0;
-                gameScroll = 0;
-                score = 0;
-                stop = true;
-                gamePanel.startButtonReset();
+                    //location for image collission
+                    //top ob check
+                    if( player.xValue < r.x + r.width - LR_BUFFER   //checks collision on right side, number indicates buffer
+                     && player.xValue + player.IMG_WIDTH > r.x + LR_BUFFER //checks collision on left side, number indicates buffer
+                     && player.yValue < r.y + r.height - TB_BUFFER  //checks collision on bottom side, number indicates buffer
+    //                 && player.yValue + player.IMG_HEIGHT > r.y + TB_BUFFER //checks collision on top side, number indicates buffer, not needed for top obstacle
+                        ) 
+                    {
+                        running = false;
+                        gameOver();
+                    }
+                    //bottom ob check 
+                    else if (player.xValue < r.x + r.width - LR_BUFFER  //checks collision on right side, number indicates buffer
+                     && player.xValue + player.IMG_WIDTH > r.x + LR_BUFFER //checks collision on left side, number indicates buffer
+    //                 && player.yValue < r.y + r.height + VisPanel.GAP - LR_BUFFER  //checks collision on bottom side, number indicates buffer, not needed for top obstacle
+                     && player.yValue + player.IMG_HEIGHT > r.y + VisPanel.GAP + LR_BUFFER  //checks collision on top side, number indicates buffer
+                        )
+                    {
+                        running = false;
+                        gameOver();
+                    }
+
+                    if(player.xValue>r.x+r.width && player.xValue<r.x +r.width+4) {
+                        score++;
+                    }
+
+                }
+                obstacles.removeAll(remove);
+                gameTime++;
+                gameScroll++;
+
+                //if player goes out of map
+                if(player.yValue + player.IMG_HEIGHT > HEIGHT || player.yValue < 0) {
+                    gameOver();
+                    running = false;
+                }
+
+                if(!running) {
+                    obstacles.clear();
+                    //player.resetToucan();  //commented out to work with hiding player
+                    gameTime = 0;
+                    gameScroll = 0;
+                    score = 0;
+                    stop = true;
+                    gamePanel.startButtonReset();
+                    flying = false;
+                }
             }
         }
     }
@@ -168,6 +172,9 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
 //                gamePanel.startButtonPressed();
 //                this.stop = false;
             } else {
+                if(flying == false) {
+                    flying = true;
+                }
                 player.up();
             }
         }
@@ -186,6 +193,10 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
     
     public boolean isGameStopped() {
         return stop;
+    }
+    
+    public boolean isFlying() {
+        return flying;
     }
         
 }
