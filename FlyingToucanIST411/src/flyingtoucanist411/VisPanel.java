@@ -51,7 +51,8 @@ public class VisPanel extends JPanel {
     private JToggleButton startButton, scoreButton, saveButton, backButton;
     private JTextField nameField;
     private boolean nameFieldAdded = false, saveButtonVisible = true, nameFieldEnabled = true;
-
+    DatabaseAccess database;
+            
     public VisPanel(FlyingToucanIST411 gameIn, Toucan playerIn, ArrayList<Rectangle> obs) throws FontFormatException, IOException {
         this.game = gameIn;
         this.player = playerIn;
@@ -59,6 +60,7 @@ public class VisPanel extends JPanel {
         
         gameFont = Font.createFont(Font.TRUETYPE_FONT, new File("pixel_font.ttf")).deriveFont(30f);
         titleFont = Font.createFont(Font.TRUETYPE_FONT, new File("pixel_font.ttf")).deriveFont(100f);
+        database = new DatabaseAccess();
         
         try {
             setImages();
@@ -229,9 +231,12 @@ public class VisPanel extends JPanel {
     
     private void saveButtonPressed() {
         String name = "";
+        String score = Integer.toString(game.getScore());
         if(!nameField.getText().isEmpty() && nameField.getText() != null) {
             name = nameField.getText();
-            //send name to sql class
+            
+            database.addScore(name, score);
+            
             saveButtonVisible = false;
             this.remove(saveButton);
             nameFieldEnabled = false;
@@ -269,17 +274,26 @@ public class VisPanel extends JPanel {
         g.setFont(gameFont);
         g.drawString("HI-SCORES", 270, 160);
         
-        ArrayList topFiveList = new ArrayList();
-        int yScore = 200;
+        ArrayList<ScoreResultSet> topFiveList = new ArrayList();
         //get topfive score from database, other class for sql
+//topFiveList = database.getScoreList();
         
         g.setColor(Color.white);
         g.setFont(gameFont);
         
+        int yScore = 200;
+        //temp
         for(int x = 1; x<6; x++) {
             g.drawString(x + ". " + "temp", 240, yScore);
             yScore += 40;
         }
+        
+        //when done with temp
+//        for(int x = 1; x<6; x++) {
+//            ScoreResultSet result = topFiveList.get(x);
+//            g.drawString(x + ". " + result.getName() + ": " + result.getScore(), 240, yScore);
+//            yScore += 40;
+//        }
     }
     
     //TODO add to new panel ontop of gamepanel
