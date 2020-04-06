@@ -161,17 +161,17 @@ public class SQLiteDatabase
     }// TableQuery
             
             
-    public void inputScores( String name, String scores)
+    public void inputScores( int id, String name, String scores)
     {
-        String stmt = "INSERT INTO Scores(  name, Score) VALUES( ?,?)";
+        String stmt = "INSERT INTO Scores( ID, name, score) VALUES( ?, ?, ?)";
         
         try
         {
             PreparedStatement preStmt = myCon.prepareStatement(stmt);
             
-            
-            preStmt.setString(1,name);
-            preStmt.setString(2, scores);
+            preStmt.setInt(1, id);
+            preStmt.setString(2,name);
+            preStmt.setString(3, scores);
             preStmt.executeUpdate();
             
         }
