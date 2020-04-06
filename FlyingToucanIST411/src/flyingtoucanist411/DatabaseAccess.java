@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import flyingtoucanist411.ScoreResultSet;
+import java.sql.*;
 /**
  *
  * @author lchuf
@@ -12,6 +13,8 @@ import flyingtoucanist411.ScoreResultSet;
 public class DatabaseAccess {
     private PreparedStatement sqlFind;
     
+    private String filepath = "JDBC:SQlite:FlyingToucansIST411/Toucans.DB";
+    private Connection myCon= null;
     
     public ArrayList getScoreList() {
         try{
@@ -36,7 +39,12 @@ public class DatabaseAccess {
       }
     }
     
-    public void addScore(String name, String Score) {
+    public void addScore(String name, String score) {
+        SQLiteDatabase ToucanDB = new SQLiteDatabase();// creates database object
+        ToucanDB.setFilePath(filepath);// sets filepath for database
+        ToucanDB.connectDatabase(myCon);// connects to database with connection myCon
+        ToucanDB.inputScores(name, score);// adds name and score into database
+        ToucanDB.disconnect(ToucanDB.getMyCon());// disconnects from database
         //add name and score as new entry in db
     }
 }

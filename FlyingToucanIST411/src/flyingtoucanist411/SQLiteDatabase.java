@@ -5,12 +5,7 @@
  */
 package flyingtoucanist411;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 /**
  *
@@ -140,7 +135,7 @@ public class SQLiteDatabase
     
     
     
-    public ResultSet TableQuery (String Query)
+    public ResultSet TableQuery (String Query) 
     {
         ResultSet rsReturn = null;
         try
@@ -166,7 +161,29 @@ public class SQLiteDatabase
     }// TableQuery
             
             
+    public void inputScores( String name, String scores)
+    {
+        String stmt = "INSERT INTO Scores(  name, Score) VALUES( ?,?)";
+        
+        try
+        {
+            PreparedStatement preStmt = myCon.prepareStatement(stmt);
             
+            
+            preStmt.setString(1,name);
+            preStmt.setString(2, scores);
+            preStmt.executeUpdate();
+            
+        }
+        
+        catch(SQLException e)
+        {
+            System.out.println(e.getMessage());
+        }// catch SQLException
+        
+    }// inputScore Prepared statement    
+
+    
             
     public void disconnect(Connection myCon)
     {
