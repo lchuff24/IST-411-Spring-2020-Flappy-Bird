@@ -22,13 +22,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.Timer;
+import javax.swing.border.Border;
 
 /**
  *
@@ -39,22 +42,15 @@ public class VisPanel extends JPanel {
     private ArrayList<Rectangle> obstacles;
     private FlyingToucanIST411 game;
     private Font gameFont, menuFont, titleFont;
-    public static final Color bg = new Color(0, 160, 160); //TODO swap for image
-    public static final int OB_WIDTH = 50, OB_HIEGHT = 30;
-    private Image obTop, obBody;  //swap for single obstacles
-    
-    private Image obAbove, obBelow;
+    public static final int OB_WIDTH = 50, OB_HIEGHT = 30, GAP = 400;
     public static final int ABOVE_H = 260, ABOVE_W = 104,
                              BELOW_H = 260, BELOW_W = 112;
-    public static final int GAP = 400;
-    private Image background;
-    private Image start, startPush, scores, scoresPush;
-    private JToggleButton startButton;
-    private JToggleButton scoreButton;
-    private JLabel countdownLabel;
-    private Timer timer;
-    private long startTime = -1;
-    private long duration = 5000;
+    
+    private Image obAbove, obBelow;
+    private Image background, start, startPush, scores, scoresPush, save, savePush, back, backPush;
+    private JToggleButton startButton, scoreButton, saveButton, backButton;
+    private JTextField nameField;
+    private boolean nameFieldAdded = false, saveButtonVisible = true, nameFieldEnabled = true;
 
     public VisPanel(FlyingToucanIST411 gameIn, Toucan playerIn, ArrayList<Rectangle> obs) throws FontFormatException, IOException {
         this.game = gameIn;
@@ -71,7 +67,9 @@ public class VisPanel extends JPanel {
             this.setLayout(null);
             loadStartButton();
             loadScoreButton();
-        
+            loadSaveButton();
+            loadBackButton();
+            loadNameField();
         }
         catch(IOException e) {
             e.printStackTrace();
@@ -106,26 +104,69 @@ public class VisPanel extends JPanel {
         }
         
         //allows the player to hover after start clicked, to prevent falling to death
-        if(!game.isFlying()) { 
+        if(!game.isFlying() && !game.isGameStopped()) { 
             player.resetToucan();
         }
         
         //when in menu
         if(game.isGameStopped()) {
-            player.hideToucan();
-
-            startButton.setSelected(false);
-            this.add(startButton);
-            scoreButton.setSelected(false);
-            this.add(scoreButton);
-                        
-            //title and key guide
-            g.setColor(Color.white);
-            g.setFont(titleFont);
-            g.drawString("Flying Toucan", 70, 100);
-            g.setColor(Color.gray);
-            g.setFont(gameFont);
-            g.drawString("Press [ space ] to fly up!", 185, 330);
+            if(game.isShowScores()) {
+                drawHiScores(g);
+            }
+            else if(game.isInitMenu()) {
+                startButton.setSelected(false);
+                this.add(startButton);
+                scoreButton.setSelected(false);
+                this.add(scoreButton);
+                player.hideToucan();
+                
+                //title and key guide
+                g.setColor(Color.white);
+                g.setFont(titleFont);
+                g.drawString("Flying Toucan", 70, 100);
+                g.setColor(Color.gray);
+                g.setFont(gameFont);
+                g.drawString("Press [ space ] to fly up!", 185, 330);
+            } else {
+                //menu after first attempt
+                
+                startButton.setSelected(false);
+                this.add(startButton);
+                scoreButton.setSelected(false);
+                this.add(scoreButton);
+                //display "game over" and player score
+                g.setColor(Color.white);
+                g.setFont(titleFont);
+                g.drawString("GAME OVER", 120, 100);
+                g.setFont(gameFont);
+                g.drawString("Your score: " + game.getScore(), 250, 140);
+                
+                //Enter name, will all need to be moved
+                g.drawString("Name: ", 180, 180);
+                if(!nameFieldAdded) {
+                    this.add(nameField);
+                    this.nameFieldAdded = true;
+                }
+                if(!nameFieldEnabled) {
+                    nameField.setEnabled(false);
+                } else {
+                    nameField.setEnabled(true);
+                }
+                nameField.grabFocus();
+//                if(saveButtonVisible) {
+//                    this.add(saveButton); 
+//                }
+                if(!nameField.getText().isEmpty() && nameField.getText() != null && saveButtonVisible) {
+                    this.add(saveButton);
+                } else {
+                    this.remove(saveButton);
+                }
+                saveButton.setSelected(false);
+                
+                //change button bounds
+                startButton.setBounds(FlyingToucanIST411.WIDTH/2-100, FlyingToucanIST411.HEIGHT/2-40, 200, 88);
+                scoreButton.setBounds(FlyingToucanIST411.WIDTH/2-100, FlyingToucanIST411.HEIGHT/2+60, 200, 40);
+            }
         }
         
         //TODO do a version of menu that shows score and doesnt show title
@@ -164,15 +205,96 @@ public class VisPanel extends JPanel {
         scoreButton.setFocusable(false);
         scoreButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                //TODO remove home page and show scores from sql
+                showScores();
             }
         });
     }
     
+    private void loadSaveButton() {
+        saveButton = new JToggleButton(new ImageIcon(save));
+        saveButton.setOpaque(false);
+        saveButton.setContentAreaFilled(false);
+        saveButton.setBorderPainted(false);
+        saveButton.setFocusPainted(false);
+        saveButton.setBounds(400, 150, 92, 40);
+        saveButton.setSelectedIcon(new ImageIcon(savePush));
+        saveButton.setFocusable(false);
+        saveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveButtonPressed();
+                //disable save button after entry that isnt ""
+            }
+        });
+    }
+    
+    private void saveButtonPressed() {
+        String name = "";
+        if(!nameField.getText().isEmpty() && nameField.getText() != null) {
+            name = nameField.getText();
+            //send name to sql class
+            saveButtonVisible = false;
+            this.remove(saveButton);
+            nameFieldEnabled = false;
+        }
+    }
+    
+    private void loadBackButton() {
+        backButton = new JToggleButton(new ImageIcon(back));
+        backButton.setOpaque(false);
+        backButton.setContentAreaFilled(false);
+        backButton.setBorderPainted(false);
+        backButton.setFocusPainted(false);
+        backButton.setBounds(FlyingToucanIST411.WIDTH/2-100, 385, 200, 40);
+        backButton.setSelectedIcon(new ImageIcon(backPush));
+        backButton.setFocusable(false);
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonPressed();
+            }
+        });
+    }
+    
+    private void backButtonPressed() {
+        this.remove(backButton);
+        game.setShowScores(false);
+    }
+    
+    private void drawHiScores(Graphics g) {
+        g.setColor(Color.white);
+        g.setFont(titleFont);
+        g.drawString("Flying Toucan", 70, 100);
+        
+        backButton.setSelected(false);
+        g.setColor(Color.white);
+        g.setFont(gameFont);
+        g.drawString("HI-SCORES", 270, 160);
+        
+        ArrayList topFiveList = new ArrayList();
+        int yScore = 200;
+        //get topfive score from database, other class for sql
+        
+        g.setColor(Color.white);
+        g.setFont(gameFont);
+        
+        for(int x = 1; x<6; x++) {
+            g.drawString(x + ". " + "temp", 240, yScore);
+            yScore += 40;
+        }
+    }
+    
+    //TODO add to new panel ontop of gamepanel
+    private void loadNameField() {
+        nameField = new JTextField();
+        nameField.setBounds(250, 155, 140, 30);
+        Border border = BorderFactory.createMatteBorder(0, 0, 2, 0, Color.white);
+        nameField.setBorder(border);
+        nameField.setOpaque(false);
+        nameField.setForeground(Color.white);
+        nameField.setFont(gameFont);
+        //actions listener for enter? which presses button
+    }
+    
     private void setImages() throws IOException {
-        obTop = ImageIO.read(new File("78px-Pipe.png"));
-        obBody = ImageIO.read(new File("pipe_part.png"));
-
         obAbove = ImageIO.read(new File("Vines Outline.png"));
         obBelow = ImageIO.read(new File("Bush Outline.png"));
         background = ImageIO.read(new File("Jungle Background.png"));
@@ -180,7 +302,12 @@ public class VisPanel extends JPanel {
         startPush = ImageIO.read(new File("Start Big Pushed.png"));
         scores = ImageIO.read(new File("hi-scores.png"));
         scoresPush = ImageIO.read(new File("hi-scores pushed.png"));
+        save = ImageIO.read(new File("save.png"));
+        savePush = ImageIO.read(new File("save push.png"));
+        back = ImageIO.read(new File("back.png"));
+        backPush = ImageIO.read(new File("back push.png"));
     }
+    
     
     /*
      * VARIOUS ACTIONS
@@ -198,8 +325,31 @@ public class VisPanel extends JPanel {
     private void gameStarted() {
         this.remove(startButton);
         this.remove(scoreButton);
+        this.remove(saveButton);
+        this.remove(nameField);
+        this.nameField.setText("");
+        this.nameFieldAdded = false;
+        this.nameFieldEnabled = true;
+        
+        game.resetAssets();
         
         game.setStop(false);
+        game.setInitMenu(false);
+        game.setScore(0);
+        saveButtonVisible = true;
     }
     
+    private void showScores() {
+        this.remove(startButton);
+        this.remove(scoreButton);
+        this.remove(saveButton);
+        this.remove(nameField);
+        this.nameField.setText("");
+        this.nameFieldAdded = false;
+        
+        game.setShowScores(true);
+        this.add(backButton);
+    }
+    
+    //TODO remove menu method
 }

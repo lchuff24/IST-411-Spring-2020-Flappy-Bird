@@ -37,7 +37,7 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
     private ArrayList<Rectangle> obstacles;  //TODO replace with obstacle images
     private int gameTime, gameScroll;
     private Timer timer;
-    private boolean stop, flying;
+    private boolean stop, flying, initMenu, showScores;
     
     private int score;
     
@@ -65,6 +65,8 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
         
         stop = true;
         flying = false;
+        initMenu = true;
+        showScores = false;
         
         timer = new Timer(1000/FPS, this);
         timer.start();
@@ -76,6 +78,7 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
         gamePanel.repaint();
         //if not stopped
         if(!stop) {
+            mainFrame.requestFocus();
             if(flying) {
                 player.flightPhysics();
                 //number below in if statement determines how oftten obstacles are spawned
@@ -111,7 +114,7 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
                         ) 
                     {
                         running = false;
-                        gameOver();
+//                        gameOver();
                     }
                     //bottom ob check 
                     else if (player.xValue < r.x + r.width - LR_BUFFER  //checks collision on right side, number indicates buffer
@@ -121,7 +124,7 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
                         )
                     {
                         running = false;
-                        gameOver();
+//                        gameOver();
                     }
 
                     if(player.xValue>r.x+r.width && player.xValue<r.x +r.width+4) {
@@ -135,16 +138,19 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
 
                 //if player goes out of map
                 if(player.yValue + player.IMG_HEIGHT > HEIGHT || player.yValue < 0) {
-                    gameOver();
+//                    gameOver();
                     running = false;
                 }
 
                 if(!running) {
-                    obstacles.clear();
-                    //player.resetToucan();  //commented out to work with hiding player
-                    gameTime = 0;
-                    gameScroll = 0;
-                    score = 0;
+                    if(!initMenu) {
+                        
+                    }
+//                    obstacles.clear();
+//                    player.resetToucan();  //commented out to work with hiding player
+//                    gameTime = 0;
+//                    gameScroll = 0;
+//                    score = 0;
                     stop = true;
                     gamePanel.startButtonReset();
                     flying = false;
@@ -159,6 +165,16 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
         
         //send score
         //and maybe display other hi scores?
+    }
+    
+    public void resetAssets() {
+        obstacles.clear();
+        gameTime = 0;
+        gameScroll = 0;
+    }
+    
+    public void setScore(int score) {
+        this.score = score;
     }
     
     public int getScore() {
@@ -187,6 +203,10 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
         
     }
     
+    public void requestFocus() {
+        mainFrame.requestFocus();
+    }
+    
     public void setStop(boolean stop) {
         this.stop = stop;
     }
@@ -197,6 +217,22 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
     
     public boolean isFlying() {
         return flying;
+    }
+    
+    public void setInitMenu(boolean initMenu) {
+        this.initMenu = initMenu;
+    }
+    
+    public boolean isInitMenu() {
+        return initMenu;
+    }
+    
+    public void setShowScores(boolean showScores) {
+        this.showScores = showScores;
+    }
+    
+    public boolean isShowScores() {
+        return showScores;
     }
         
 }
