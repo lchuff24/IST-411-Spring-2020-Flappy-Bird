@@ -48,7 +48,7 @@ public class DatabaseAccess {
         ResultSet rTemp = ToucanDB.TableQuery("Select * form Scores");
        
         
-        ToucanDB.inputScores(1,name, score);// adds name and score into database
+        ToucanDB.inputScores(name, score);// adds name and score into database
         ToucanDB.disconnect(ToucanDB.getMyCon());// disconnects from database
         //add name and score as new entry in db
     }// addScore
