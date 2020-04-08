@@ -163,7 +163,7 @@ public class SQLiteDatabase
             
     public void inputScores(  String name, String scores)
     {
-        String stmt = "INSERT INTO Scores(  name, score) VALUES( ?, ?)";
+        String stmt = "INSERT INTO Scores( name, score) VALUES( ?, ?)";
         
         try
         {

@@ -13,7 +13,7 @@ import java.sql.*;
 public class DatabaseAccess {
     private PreparedStatement sqlFind;
     
-    private String filepath = "JDBC:SQlite:D:\\Users\\Jake_Gaming_PC\\Documents\\NetBeansProjects\\FlyingToucansIST411\\Toucans.db";
+    private String filepath = "JDBC:SQlite:D:\\Users\\Jake_Gaming_PC\\Documents\\NetBeansProjects\\FlyingToucansIST411\\FlyingToucanIST411\\Toucans.db";
     private Connection myCon= null;
     
     public ArrayList getScoreList() {
@@ -45,7 +45,7 @@ public class DatabaseAccess {
         ToucanDB.setFilePath(filepath);// sets filepath for database
        // ToucansDB.createDatabase()
         ToucanDB.connectDatabase(myCon);// connects to database with connection myCon
-        ResultSet rTemp = ToucanDB.TableQuery("Select * form Scores");
+        ResultSet rTemp = ToucanDB.TableQuery("Select * from Scores");
        
         
         ToucanDB.inputScores(name, score);// adds name and score into database
