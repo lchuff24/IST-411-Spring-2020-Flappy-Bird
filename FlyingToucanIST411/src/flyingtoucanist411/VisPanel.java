@@ -169,8 +169,6 @@ public class VisPanel extends JPanel {
                 startButton.setBounds(FlyingToucanIST411.WIDTH/2-100, FlyingToucanIST411.HEIGHT/2-40, 200, 88);
                 scoreButton.setBounds(FlyingToucanIST411.WIDTH/2-100, FlyingToucanIST411.HEIGHT/2+60, 200, 40);
             }
-            
-            
         }
         
         //TODO do a version of menu that shows score and doesnt show title
@@ -289,7 +287,6 @@ public class VisPanel extends JPanel {
             g.drawString(x + ". " + "temp", 240, yScore);
             yScore += 40;
         }
-        
         
         //when done with temp
 //        for(int x = 1; x<6; x++) {
