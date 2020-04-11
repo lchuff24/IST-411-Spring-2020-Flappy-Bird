@@ -18,7 +18,6 @@ import java.io.*;
 import javax.imageio.*;
 import java.util.*;
 import javax.swing.Timer;
-import java.sql.*;
 
 /**
  *
@@ -42,17 +41,11 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
     
     private int score;
     
-    
-    
-    
-    
-    
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) throws IOException, FontFormatException {
         // TODO code application logic here
-        
         new FlyingToucanIST411().start();
     }
     
@@ -169,7 +162,6 @@ public class FlyingToucanIST411 implements ActionListener, KeyListener {
     private void gameOver() {
         JOptionPane.showMessageDialog(mainFrame, "GAME OVER\n"+"Score: " + score);
         //remove above for sep inframe panel?
-        //code for 
         
         //send score
         //and maybe display other hi scores?
