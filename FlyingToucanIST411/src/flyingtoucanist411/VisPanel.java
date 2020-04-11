@@ -307,6 +307,7 @@ public class VisPanel extends JPanel {
         nameField.setBorder(border);
         nameField.setOpaque(false);
         nameField.setForeground(Color.white);
+        nameField.setCaretColor(Color.white);
         nameField.setFont(gameFont);
         //actions listener for enter? which presses button
     }

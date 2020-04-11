@@ -18,7 +18,7 @@ public class Toucan {
     public Toucan() throws IOException {
         xValue = 150;
         yValue = FlyingToucanIST411.HEIGHT/2;
-        toucanImage = ImageIO.read(new File("Birb Outline.png"));
+        toucanImage = ImageIO.read(FlyingToucanIST411.class.getResource("/images/Birb Outline.png"));
     }
     
     public void flightPhysics() {
