@@ -58,8 +58,11 @@ public class VisPanel extends JPanel {
         this.player = playerIn;
         this.obstacles = obs;
         
-        gameFont = Font.createFont(Font.TRUETYPE_FONT, new File("pixel_font.ttf")).deriveFont(30f);
-        titleFont = Font.createFont(Font.TRUETYPE_FONT, new File("pixel_font.ttf")).deriveFont(100f);
+        InputStream stream = FlyingToucanIST411.class.getResourceAsStream("/fonts/pixel_font.ttf");
+        gameFont = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(30f);
+        stream = FlyingToucanIST411.class.getResourceAsStream("/fonts/pixel_font.ttf");
+        titleFont = Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(100f);
+        
         database = new DatabaseAccess();
         
         try {
@@ -310,17 +313,19 @@ public class VisPanel extends JPanel {
     }
     
     private void setImages() throws IOException {
-        obAbove = ImageIO.read(new File("Vines Outline.png"));
-        obBelow = ImageIO.read(new File("Bush Outline.png"));
-        background = ImageIO.read(new File("Jungle Background.png"));
-        start = ImageIO.read(new File("Start Big.png"));
-        startPush = ImageIO.read(new File("Start Big Pushed.png"));
-        scores = ImageIO.read(new File("hi-scores.png"));
-        scoresPush = ImageIO.read(new File("hi-scores pushed.png"));
-        save = ImageIO.read(new File("save.png"));
-        savePush = ImageIO.read(new File("save push.png"));
-        back = ImageIO.read(new File("back.png"));
-        backPush = ImageIO.read(new File("back push.png"));
+        obAbove = ImageIO.read(FlyingToucanIST411.class.getResource("/images/Vines Outline.png"));
+        obBelow = ImageIO.read(FlyingToucanIST411.class.getResource("/images/Bush Outline.png"));
+        background = ImageIO.read(FlyingToucanIST411.class.getResource("/images/Jungle Background.png"));
+        start = ImageIO.read(FlyingToucanIST411.class.getResource("/images/Start Big.png"));
+        startPush = ImageIO.read(FlyingToucanIST411.class.getResource("/images/Start Big Pushed.png"));
+        scores = ImageIO.read(FlyingToucanIST411.class.getResource("/images/hi-scores.png"));
+        scoresPush = ImageIO.read(FlyingToucanIST411.class.getResource("/images/hi-scores pushed.png"));
+        save = ImageIO.read(FlyingToucanIST411.class.getResource("/images/save.png"));
+        savePush = ImageIO.read(FlyingToucanIST411.class.getResource("/images/save push.png"));
+        back = ImageIO.read(FlyingToucanIST411.class.getResource("/images/back.png"));
+        backPush = ImageIO.read(FlyingToucanIST411.class.getResource("/images/back push.png"));
+        
+        System.out.println(FlyingToucanIST411.class.getResource("/database/Toucans.DB").getFile());
     }
     
     

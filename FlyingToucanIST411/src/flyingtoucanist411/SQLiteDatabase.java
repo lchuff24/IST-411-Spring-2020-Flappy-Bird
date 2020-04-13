@@ -50,7 +50,7 @@ public class SQLiteDatabase
     {
         
         
-        try(Connection createCon = DriverManager.getConnection(filePath))
+        try(Connection createCon = DriverManager.getConnection(FlyingToucanIST411.class.getResource("/database/Toucans.DB").getFile()))
         {
             
             if (createCon != null) 
