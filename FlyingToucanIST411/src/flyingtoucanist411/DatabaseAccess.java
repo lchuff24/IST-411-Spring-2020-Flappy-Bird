@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import flyingtoucanist411.ScoreResultSet;
+import java.sql.*;
 /**
  *
  * @author lchuf
@@ -38,6 +39,14 @@ public class DatabaseAccess {
     }
     
     public void addScore(String name, String Score) {
-        //add name and score as new entry in db
-    }
+        
+        SQLiteDatabase dbTemp = new SQLiteDatabase();// creates database object
+        
+        dbTemp.connectDatabase(dbTemp.getMyCon());// connects to database using connection integrated
+        
+        dbTemp.inputScores(name, Score);// puts name and score in database table Scores
+        
+        dbTemp.disconnect(dbTemp.getMyCon());// diconnect from database
+        
+    }// addScore
 }
