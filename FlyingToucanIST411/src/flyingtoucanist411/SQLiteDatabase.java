@@ -167,7 +167,7 @@ public class SQLiteDatabase
         
         try
         {
-            PreparedStatement preStmt = myCon.prepareStatement(stmt);
+            PreparedStatement preStmt = getMyCon().prepareStatement(stmt);
             
           
             preStmt.setString(1,name);
