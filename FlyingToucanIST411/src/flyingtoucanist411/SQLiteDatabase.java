@@ -15,7 +15,7 @@ public class SQLiteDatabase
 {
     
     
-    private String filePath = "";
+    private String filePath = FlyingToucanIST411.class.getResource("/database/Toucans.DB").getFile();
     private Connection  myCon = null;
 
     
@@ -44,15 +44,16 @@ public class SQLiteDatabase
         filePath = newFilePath;
     }// setfilePath
     
+  
     
     
     public void createDatabase()
     {
         
         
-        try(Connection createCon = DriverManager.getConnection(FlyingToucanIST411.class.getResource("/database/Toucans.DB").getFile()))
+        try(Connection createCon = DriverManager.getConnection("jdbc:sqlite:" + filePath.substring(1)))
         {
-            
+           
             if (createCon != null) 
             {
                 DatabaseMetaData meta = createCon.getMetaData();
@@ -80,7 +81,7 @@ public class SQLiteDatabase
        
         try
         {
-           myCon = DriverManager.getConnection(FlyingToucanIST411.class.getResource("/database/Toucans.DB").getFile());// connects to the database using the filepath
+           myCon = DriverManager.getConnection("jdbc:sqlite:" + filePath.substring(1));// connects to the database using the filepath
            setMyCon(myCon);
            
            System.out.println("Connection has been established."); 
