@@ -74,7 +74,7 @@ public class SQLiteDatabase
     
     
     
-    public void connectDatabase( )
+    public void connectDatabase()
     {
      //All code followed  from  https://www.sqlitetutorial.net/sqlite-java/sqlite-jdbc-driver/
     
