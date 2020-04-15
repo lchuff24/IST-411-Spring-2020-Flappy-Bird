@@ -42,7 +42,7 @@ public class DatabaseAccess {
         
         SQLiteDatabase dbTemp = new SQLiteDatabase();// creates database object
         
-        dbTemp.connectDatabase(dbTemp.getMyCon());// connects to database using connection integrated
+        dbTemp.connectDatabase();// connects to database using connection integrated
         
         dbTemp.inputScores(name, Score);// puts name and score in database table Scores
         

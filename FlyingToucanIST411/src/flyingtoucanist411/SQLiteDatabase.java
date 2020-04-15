@@ -74,7 +74,7 @@ public class SQLiteDatabase
     
     
     
-    public void connectDatabase(Connection myCon )
+    public void connectDatabase( )
     {
      //All code followed  from  https://www.sqlitetutorial.net/sqlite-java/sqlite-jdbc-driver/
     
@@ -82,7 +82,7 @@ public class SQLiteDatabase
         try
         {
            myCon = DriverManager.getConnection("jdbc:sqlite:" + filePath.substring(1));// connects to the database using the filepath
-           setMyCon(myCon);
+           
            
            System.out.println("Connection has been established."); 
            
