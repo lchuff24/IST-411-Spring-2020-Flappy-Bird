@@ -76,7 +76,7 @@ public class SQLiteDatabase
     
     public void connectDatabase()
     {
-     //All code followed  from  https://www.sqlitetutorial.net/sqlite-java/sqlite-jdbc-driver/
+     //code followed  from  https://www.sqlitetutorial.net/sqlite-java/sqlite-jdbc-driver/
     
        
         try
