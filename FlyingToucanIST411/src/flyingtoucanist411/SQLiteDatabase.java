@@ -186,7 +186,7 @@ public class SQLiteDatabase
 
     
             
-    public void disconnect(Connection myCon)
+    public void disconnect()
     {
         
         

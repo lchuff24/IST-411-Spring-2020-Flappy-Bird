@@ -46,7 +46,7 @@ public class DatabaseAccess {
         
         dbTemp.inputScores(name, Score);// puts name and score in database table Scores
         
-        dbTemp.disconnect(dbTemp.getMyCon());// diconnect from database
+        dbTemp.disconnect();// diconnect from database
         
     }// addScore
 }
