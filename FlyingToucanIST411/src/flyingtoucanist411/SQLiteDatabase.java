@@ -15,7 +15,7 @@ public class SQLiteDatabase
 {
     
     
-    private String filePath = FlyingToucanIST411.class.getResource("/database/Toucans.DB").getFile();
+    private String filePath = FlyingToucanIST411.class.getResource("/database/Toucans.db").getPath();
     private Connection  myCon = null;
 
     
@@ -51,7 +51,7 @@ public class SQLiteDatabase
     {
         
         
-        try(Connection createCon = DriverManager.getConnection("jdbc:sqlite:" + filePath.substring(1)))
+        try(Connection createCon = DriverManager.getConnection("jdbc:sqlite:" + filePath.substring(1)))// + filePath.substring(1)))
         {
            
             if (createCon != null) 
@@ -83,8 +83,9 @@ public class SQLiteDatabase
         {
            myCon = DriverManager.getConnection("jdbc:sqlite:" + filePath.substring(1));// connects to the database using the filepath
            
-           
-           System.out.println("Connection has been established."); 
+           // jdbc:sqlite:D:\\Users\\Jake_Gaming_PC\\Documents\\NetBeansProjects\\FlyingToucansIST411\\FlyingToucanIST411\\src\\database\\Toucans.db
+           System.out.println("Connection has been established.\n to jdbc:sqlite:" + filePath.substring(1)); 
+            
            
         }// try
         
@@ -168,6 +169,7 @@ public class SQLiteDatabase
         
         try
         {
+             getMyCon().setAutoCommit(true);
             PreparedStatement preStmt = getMyCon().prepareStatement(stmt);
             
           
