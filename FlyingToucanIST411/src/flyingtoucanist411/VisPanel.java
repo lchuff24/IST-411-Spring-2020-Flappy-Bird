@@ -366,7 +366,13 @@ public class VisPanel extends JPanel {
         this.remove(nameField);
         this.nameField.setText("");
         this.nameFieldAdded = false;
-        
+
+        if(!nameFieldEnabled) {
+            game.setInitMenu(true);
+            startButton.setBounds(FlyingToucanIST411.WIDTH/2-100, FlyingToucanIST411.HEIGHT/2-80, 200, 88);
+            scoreButton.setBounds(FlyingToucanIST411.WIDTH/2-100, FlyingToucanIST411.HEIGHT/2+20, 200, 40);
+        }
+
         game.setShowScores(true);
         this.add(backButton);
     }
