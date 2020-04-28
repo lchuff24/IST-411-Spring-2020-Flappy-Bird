@@ -50,7 +50,6 @@ public class SQLiteDatabase
     public void createDatabase()
     {
         
-        
         try(Connection createCon = DriverManager.getConnection("jdbc:sqlite:" + filePath.substring(1)))// + filePath.substring(1)))
         {
            
@@ -78,11 +77,11 @@ public class SQLiteDatabase
     {
      //code followed  from  https://www.sqlitetutorial.net/sqlite-java/sqlite-jdbc-driver/
     
-       
+        System.out.println("inside connectDatabase");
         try
         {
-           myCon = DriverManager.getConnection("jdbc:sqlite:" + filePath.substring(1));// connects to the database using the filepath
-           
+           //myCon = DriverManager.getConnection("jdbc:sqlite:" + filePath.substring(1));// connects to the database using the filepath
+           myCon = DriverManager.getConnection("jdbc:sqlite:" + filePath);// connects to the database using the filepath
            // jdbc:sqlite:D:\\Users\\Jake_Gaming_PC\\Documents\\NetBeansProjects\\FlyingToucansIST411\\FlyingToucanIST411\\src\\database\\Toucans.db
            System.out.println("Connection has been established.\n to jdbc:sqlite:" + filePath.substring(1)); 
             

@@ -16,6 +16,11 @@ import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +31,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -117,6 +123,7 @@ public class VisPanel extends JPanel {
         if(game.isGameStopped()) {
             if(game.isShowScores()) {
                 drawHiScores(g);
+                //Top5Scores(g);
             }
             else if(game.isInitMenu()) {
                 startButton.setSelected(false);
@@ -211,6 +218,7 @@ public class VisPanel extends JPanel {
         scoreButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showScores();
+                //Top5Scores();
             }
         });
     }
@@ -266,7 +274,7 @@ public class VisPanel extends JPanel {
         this.remove(backButton);
         game.setShowScores(false);
     }
-    
+    Top5Bean cb = new Top5Bean();
     private void drawHiScores(Graphics g) {
         g.setColor(Color.white);
         g.setFont(titleFont);
@@ -276,29 +284,36 @@ public class VisPanel extends JPanel {
         g.setColor(Color.white);
         g.setFont(gameFont);
         g.drawString("HI-SCORES", 270, 160);
-        
-        ArrayList<ScoreResultSet> topFiveList = new ArrayList();
-        //get topfive score from database, other class for sql
-//topFiveList = database.getScoreList();
-        
         g.setColor(Color.white);
         g.setFont(gameFont);
-        
-        int yScore = 200;
-        //temp
+
+        //Player     
+        ScoreResultSet rs = cb.GetTopPlayer();
+        ArrayList playerList = rs.getTopPlayer();
+        ArrayList<String> topPlayer = new ArrayList();
+        topPlayer = (ArrayList<String>) playerList.get(0);
+        int yPlayer = 200;
         for(int x = 1; x<6; x++) {
-            g.drawString(x + ". " + "temp", 240, yScore);
-            yScore += 40;
+            for(String name: topPlayer){
+                g.drawString(x + ". " + name, 230, yPlayer);
+                yPlayer += 40;
+                x++;
+            }
         }
-        
-        //when done with temp
-//        for(int x = 1; x<6; x++) {
-//            ScoreResultSet result = topFiveList.get(x);
-//            g.drawString(x + ". " + result.getName() + ": " + result.getScore(), 240, yScore);
-//            yScore += 40;
-//        }
-    }
-    
+        //score
+        ScoreResultSet rs2 = cb.getTopScore();
+        ArrayList scoreList = rs2.getTopScore();
+        ArrayList<String> topScore = new ArrayList();     
+        topScore = (ArrayList<String>) scoreList.get(0);
+        int yScore = 200;
+        for(int x = 1; x<6; x++) {
+            for(String score: topScore){
+                g.drawString(score, 430, yScore);
+                yScore += 40;
+                x++;
+            }
+        }
+    }        
     //TODO add to new panel ontop of gamepanel
     private void loadNameField() {
         nameField = new JTextField();
@@ -366,15 +381,15 @@ public class VisPanel extends JPanel {
         this.remove(nameField);
         this.nameField.setText("");
         this.nameFieldAdded = false;
-
+        
         if(!nameFieldEnabled) {
             game.setInitMenu(true);
             startButton.setBounds(FlyingToucanIST411.WIDTH/2-100, FlyingToucanIST411.HEIGHT/2-80, 200, 88);
             scoreButton.setBounds(FlyingToucanIST411.WIDTH/2-100, FlyingToucanIST411.HEIGHT/2+20, 200, 40);
         }
-
         game.setShowScores(true);
         this.add(backButton);
+        
     }
     
     //TODO remove menu method
